@@ -76,7 +76,6 @@ export function ProductDetail({ slug, product: externalProduct, onAddToCart, cla
                 src={images[selectedImage]}
                 alt={product.name}
                 fill
-                unoptimized
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
@@ -105,7 +104,6 @@ export function ProductDetail({ slug, product: externalProduct, onAddToCart, cla
                   src={img}
                   alt=""
                   fill
-                  unoptimized
                   sizes="64px"
                   className="object-cover"
                 />

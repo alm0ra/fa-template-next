@@ -8,8 +8,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" }
 };
 
-export const dynamic = "force-dynamic";
-
 export default function BlogPage() {
   return (
     <Suspense fallback={null}>

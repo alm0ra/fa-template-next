@@ -20,7 +20,7 @@ function getBaseUrl(): string {
   const url = process.env.NEXT_PUBLIC_API_URL || '';
   const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || '';
   if (!url || !projectId) {
-    console.error('NEXT_PUBLIC_API_URL and NEXT_PUBLIC_PROJECT_ID must be configured');
+    throw new Error('NEXT_PUBLIC_API_URL and NEXT_PUBLIC_PROJECT_ID must be configured');
   }
   return `${url}/functions/v1/shop/${projectId}`;
 }

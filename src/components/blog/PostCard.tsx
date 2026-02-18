@@ -37,7 +37,6 @@ export function PostCard({ post, onReadMore, showExcerpt = true, className }: Po
             src={post.cover_image}
             alt={post.title}
             fill
-            unoptimized
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />

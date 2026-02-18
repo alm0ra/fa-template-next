@@ -67,7 +67,6 @@ export function PostDetail({ slug, post: externalPost, className }: PostDetailPr
             src={post.cover_image}
             alt={post.title}
             fill
-            unoptimized
             sizes="(max-width: 1024px) 100vw, 900px"
             className="object-cover"
           />

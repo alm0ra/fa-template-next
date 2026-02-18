@@ -50,7 +50,6 @@ export function CartDrawer({ open, onClose, onCheckout, className }: CartDrawerP
                         src={item.product.images[0]}
                         alt={item.product.name}
                         fill
-                        unoptimized
                         sizes="64px"
                         className="object-cover"
                       />

@@ -80,7 +80,6 @@ export function ImageLightbox({ images, currentIndex, open, onOpenChange, onInde
               src={images[currentIndex]}
               alt=""
               fill
-              unoptimized
               sizes="100vw"
               className="object-contain"
             />
