@@ -1,61 +1,21 @@
 import type { MetadataRoute } from "next";
-import { getPosts } from "@/lib/blog/service";
-import { getProducts } from "@/lib/shop/service";
+import { getPlatformContext } from "@/lib/platform";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:8080";
+export default function sitemap(): MetadataRoute.Sitemap {
+  const { siteUrl } = getPlatformContext();
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const routes: MetadataRoute.Sitemap = [
+  return [
     {
-      url: `${siteUrl}/`,
+      url: siteUrl,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 1
+      priority: 1,
     },
     {
-      url: `${siteUrl}/shop`,
+      url: `${siteUrl}/api/health`,
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9
+      changeFrequency: "weekly",
+      priority: 0.3,
     },
-    {
-      url: `${siteUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8
-    }
   ];
-
-  try {
-    const [posts, products] = await Promise.all([
-      getPosts({ page: 1, limit: 200 }),
-      getProducts({ page: 1, limit: 200 })
-    ]);
-
-    routes.push(
-      ...posts.data.map((post) => ({
-        url: `${siteUrl}/blog/${post.slug}`,
-        lastModified: post.published_at
-          ? new Date(post.published_at)
-          : post.created_at
-            ? new Date(post.created_at)
-            : new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.7
-      }))
-    );
-
-    routes.push(
-      ...products.data.map((product) => ({
-        url: `${siteUrl}/shop/${product.slug}`,
-        lastModified: product.created_at ? new Date(product.created_at) : new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.7
-      }))
-    );
-  } catch {
-    // Keep static routes even when remote APIs are unavailable.
-  }
-
-  return routes;
 }

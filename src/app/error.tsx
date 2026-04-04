@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
 
 export default function GlobalError({
   error,
@@ -11,15 +10,18 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("App error:", error);
+    console.error("Template error:", error);
   }, [error]);
 
   return (
-    <div className="flex min-h-[50vh] items-center justify-center px-4" dir="rtl">
-      <div className="max-w-md space-y-4 text-center">
-        <h2 className="text-xl font-semibold">مشکلی رخ داد</h2>
-        <p className="text-sm text-muted-foreground">لطفا دوباره تلاش کنید.</p>
-        <Button onClick={reset}>تلاش مجدد</Button>
+    <div className="state-shell" dir="rtl">
+      <div className="state-card">
+        <p className="eyebrow">Runtime Error</p>
+        <h2>در اجرای صفحه مشکلی رخ داد</h2>
+        <p className="state-copy">خطا لاگ شده است. می‌توانی دوباره رندر را امتحان کنی.</p>
+        <button className="primary-button" onClick={reset} type="button">
+          تلاش مجدد
+        </button>
       </div>
     </div>
   );

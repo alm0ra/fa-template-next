@@ -1,14 +1,14 @@
 import type { MetadataRoute } from "next";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:8080";
+import { getPlatformContext } from "@/lib/platform";
 
 export default function robots(): MetadataRoute.Robots {
+  const { siteUrl } = getPlatformContext();
+
   return {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/checkout", "/order", "/payment/callback"]
     },
-    sitemap: `${siteUrl}/sitemap.xml`
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

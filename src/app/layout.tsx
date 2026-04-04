@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AppProviders } from "@/components/common/AppProviders";
+import { getPlatformContext } from "@/lib/platform";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:8080";
+const { siteUrl } = getPlatformContext();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "نقطه",
-    template: "%s | نقطه",
+    default: "قالب فارسی v2",
+    template: "%s | قالب فارسی v2",
   },
-  description: "قالب فارسی فروشگاه و بلاگ با Next.js",
+  description: "قالب مینیمال Next.js برای lane مشترک v2 با backend داینامیک.",
   alternates: {
     canonical: "/",
   },
@@ -28,8 +28,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
-      <body>
-        <AppProviders>{children}</AppProviders>
+      <body className="app-shell">
+        <div className="page-chrome" />
+        <div className="page-grid">{children}</div>
       </body>
     </html>
   );

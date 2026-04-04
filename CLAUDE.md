@@ -3,52 +3,43 @@
 ## Stack
 - Next.js 15 (App Router)
 - React 19 + TypeScript
-- Tailwind CSS + shadcn/ui
-- TanStack Query
-- Supabase JS client
+- Plain CSS
+- Route handlers for dynamic backend
+- Minimal v2 bootstrap for the shared runtime + SQLite lane
 
 ## Commands
 - `npm install`
 - `npm run dev` (default project port is 8080)
 - `npm run build`
 - `npm run start`
+- `npm run typecheck`
 
 ## Project Structure
-- `src/app/`: Next.js routes, metadata, sitemap, robots
-- `src/legacy-pages/`: client page implementations (migration layer)
-- `src/components/`: shared UI and feature components
-- `src/lib/`: services, payment/shop/blog utilities, router compat
-- `src/hooks/`: reusable React hooks
+- `src/app/`: pages, route handlers, metadata, sitemap, robots
+- `src/lib/`: small helpers for project/runtime metadata
 - `public/`: static assets and manifest/icons
 
-## Routing
-Routes are defined by `src/app/**/page.tsx`.
-Key routes:
-- `/`
-- `/shop`
-- `/shop/[slug]`
-- `/blog`
-- `/blog/[slug]`
-- `/checkout`
-- `/order`
-- `/order/[orderNumber]`
-- `/payment/callback`
+## Philosophy
+- This template is intentionally small.
+- There is no shop, blog, payment, auth, or CMS kit baked in.
+- The coding agent should build project-specific features from this shell instead of inheriting a heavy starter.
+- Route handlers must stay compatible with the v2 shared runtime path.
 
 ## Environment Variables
-Public env vars only:
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-- `NEXT_PUBLIC_API_URL`
-- `NEXT_PUBLIC_PROJECT_ID`
 - `NEXT_PUBLIC_SITE_URL`
+- `PROJECT_ID`
+- `VERSION`
+- `RUNTIME_LANE`
+- `DATABASE_PATH`
 
 Example is in `.env.example`.
 
-## SEO
-- Page metadata uses `metadata` / `generateMetadata` in `src/app`
-- `src/app/sitemap.ts` generates dynamic sitemap
-- `src/app/robots.ts` configures indexing rules
+## Dynamic Backend
+- `src/app/api/health/route.ts` exposes platform/runtime metadata.
+- `src/app/api/demo/route.ts` is a small JSON handler example with validation.
+- These files are the base for dynamic backend work in v2.
 
 ## Notes
-- Payment callback and blog listing routes are dynamic by design.
-- Legacy pages are client components and are progressively being migrated to richer server components.
+- Keep dependencies light.
+- Prefer adding domain code only when the project really needs it.
+- Do not reintroduce Supabase-specific code into this template.
