@@ -1,14 +1,20 @@
 import type { Metadata } from "next"
-import { Vazirmatn } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { QueryProvider } from "@/components/query-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { getPlatformContext } from "@/lib/platform"
 
-const vazirmatn = Vazirmatn({
-  subsets: ["arabic"],
+const vazirmatn = localFont({
+  src: [
+    { path: "../../public/fonts/vazirmatn-arabic-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../../public/fonts/vazirmatn-arabic-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../../public/fonts/vazirmatn-arabic-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "../../public/fonts/vazirmatn-arabic-700-normal.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-vazirmatn",
+  display: "swap",
 })
 
 const { siteUrl } = getPlatformContext()
