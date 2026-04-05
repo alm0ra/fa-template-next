@@ -1,16 +1,26 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { getPlatformContext } from "@/lib/platform";
+import type { Metadata } from "next"
+import { Vazirmatn } from "next/font/google"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { QueryProvider } from "@/components/query-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { getPlatformContext } from "@/lib/platform"
 
-const { siteUrl } = getPlatformContext();
+const vazirmatn = Vazirmatn({
+  subsets: ["arabic"],
+  variable: "--font-vazirmatn",
+})
+
+const { siteUrl } = getPlatformContext()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "قالب فارسی v2",
-    template: "%s | قالب فارسی v2",
+    default: "نقطه - وبسایت حرفه‌ای خودت رو بساز",
+    template: "%s | نقطه",
   },
-  description: "قالب مینیمال Next.js برای lane مشترک v2 با backend داینامیک.",
+  description:
+    "با هوش مصنوعی، وبسایت و اپلیکیشن حرفه‌ای خودت رو بدون کدنویسی بساز.",
   alternates: {
     canonical: "/",
   },
@@ -18,20 +28,38 @@ export const metadata: Metadata = {
     icon: [
       { url: "/favicon.ico" },
       { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" }
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png" }]
+    apple: [{ url: "/apple-touch-icon.png" }],
   },
-  manifest: "/site.webmanifest"
-};
+  manifest: "/site.webmanifest",
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
-      <body className="app-shell">
-        <div className="page-chrome" />
-        <div className="page-grid">{children}</div>
+    <html
+      lang="fa"
+      dir="rtl"
+      className={vazirmatn.variable}
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen font-sans antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            {children}
+            <Toaster />
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
