@@ -3,7 +3,8 @@
 ## Stack
 - Next.js 15 (App Router)
 - React 19 + TypeScript
-- Plain CSS
+- Plain CSS + lightweight design system primitives
+- Radix UI primitives for composable interactive pieces
 - Route handlers for dynamic backend
 - Minimal v2 bootstrap for the shared runtime + SQLite lane
 
@@ -17,10 +18,12 @@
 ## Project Structure
 - `src/app/`: pages, route handlers, metadata, sitemap, robots
 - `src/lib/`: small helpers for project/runtime metadata
+- `src/components/`: lightweight UI and landing primitives
 - `public/`: static assets and manifest/icons
 
 ## Philosophy
 - This template is intentionally small.
+- The landing should feel polished enough for a first deploy, not like a raw scaffold.
 - There is no shop, blog, payment, auth, or CMS kit baked in.
 - The coding agent should build project-specific features from this shell instead of inheriting a heavy starter.
 - Route handlers must stay compatible with the v2 shared runtime path.
@@ -41,5 +44,6 @@ Example is in `.env.example`.
 
 ## Notes
 - Keep dependencies light.
+- Prefer the built-in UI primitives before inventing a new visual language from scratch.
 - Prefer adding domain code only when the project really needs it.
 - Do not reintroduce Supabase-specific code into this template.
