@@ -12,7 +12,8 @@
 - next-themes (dark mode)
 - sonner (toast notifications)
 - Route handlers for dynamic backend
-- Minimal v2 bootstrap for shared runtime + SQLite lane
+- **Drizzle ORM + libSQL** (`@libsql/client` + `drizzle-orm`)
+- Minimal v2 bootstrap for shared runtime + libSQL lane
 
 ## Commands
 - `npm install`
@@ -20,6 +21,9 @@
 - `npm run build`
 - `npm run start`
 - `npm run typecheck`
+- `npm run db:generate` — generate migration files from schema changes
+- `npm run db:push` — apply schema directly to live DB (dev only)
+- `npm run db:studio` — open Drizzle Studio
 
 ## Project Structure
 ```
@@ -49,8 +53,12 @@ src/
 ├── hooks/
 │   └── use-jalali-date.ts  # Persian date formatting
 ├── lib/
+│   ├── db.ts               # Drizzle + libSQL client (lazy proxy)
 │   ├── platform.ts         # getPlatformContext()
 │   └── cn.ts               # Tailwind class merge utility
+├── db/
+│   ├── schema.ts           # Drizzle table definitions (agent edits this)
+│   └── migrations/         # Generated migration files
 └── public/
 ```
 
@@ -73,12 +81,44 @@ src/
 - Use sonner for toast notifications (`@/components/ui/sonner`)
 - Dark mode: use `bg-background`, `text-foreground`, etc. (not hardcoded colors)
 
+## Database (Drizzle + libSQL)
+
+- Schema lives in `src/db/schema.ts` — define tables with `sqliteTable` from `drizzle-orm/sqlite-core`
+- Import `db` from `@/lib/db` in route handlers and server code
+- Never hardcode `DATABASE_URL` or `DATABASE_AUTH_TOKEN` — the platform injects them at runtime
+- After editing schema: `npm run db:generate` to create a migration, `npm run db:push` to apply locally
+- The deployer auto-applies migrations to the project's libSQL namespace on every deploy
+
+Example:
+```ts
+// src/db/schema.ts
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+
+export const products = sqliteTable("products", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  price: integer("price").notNull(),
+});
+```
+
+```ts
+// src/app/api/products/route.ts
+import { db } from "@/lib/db";
+import { products } from "@/db/schema";
+
+export async function GET() {
+  const all = await db.select().from(products);
+  return Response.json(all);
+}
+```
+
 ## Environment Variables
 - `NEXT_PUBLIC_SITE_URL`
 - `PROJECT_ID`
 - `VERSION`
 - `RUNTIME_LANE`
-- `DATABASE_PATH`
+- `DATABASE_URL` — libSQL URL (injected by platform)
+- `DATABASE_AUTH_TOKEN` — JWT for libSQL (injected by platform)
 
 ## Philosophy
 - This template is intentionally minimal but polished.
