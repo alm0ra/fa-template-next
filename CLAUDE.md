@@ -47,7 +47,10 @@ src/
 ├── lib/
 │   ├── db.ts               # Drizzle + libSQL client (lazy proxy)
 │   ├── platform.ts         # getPlatformContext()
-│   └── cn.ts               # Tailwind class merge utility
+│   ├── cn.ts               # Tailwind class merge + toEnDigits()
+│   ├── persian.ts          # Persian digits, dates, phone, bank card utils
+│   └── validations/
+│       └── index.ts        # Zod schemas: mobile, bank card, email, forms
 ├── db/
 │   ├── schema.ts           # Drizzle table definitions (agent edits this)
 │   └── migrations/         # Generated migration files
@@ -203,6 +206,56 @@ Different project = different values. A medical site might use blue (`210 80% 45
 - Leave hero sections plain/flat with no gradient or decorative elements
 
 ---
+
+## Persian Utilities (`lib/persian.ts`)
+
+Ready-to-use helpers for Farsi projects. Agent should use these instead of reinventing:
+
+| Function | What it does | Example |
+|----------|-------------|---------|
+| `toPersianDigits(v)` | `"123"` → `"۱۲۳"` | Prices, dates, counters |
+| `toEnglishDigits(v)` | `"۱۲۳"` → `"123"` | Before sending to API |
+| `formatPersianNumber(n)` | `50000` → `"۵۰,۰۰۰"` | Prices, stats |
+| `formatPrice(n, unit?)` | `50000` → `"۵۰,۰۰۰ تومان"` | Price display |
+| `formatPersianDate(d)` | Jalali full date: `"۱۵ فروردین ۱۴۰۴"` | Blog posts, orders |
+| `formatPersianDateTime(d)` | With time: `"۱۵ فروردین ۱۴۰۴، ساعت ۱۴:۳۰"` | Order details |
+| `formatPersianDateShort(d)` | `"۱۴۰۴/۰۱/۱۵"` | Compact tables |
+| `formatRelativeTime(d)` | `"۳ دقیقه پیش"` | Comments, chat |
+| `validateIranianMobile(p)` | Validates `09xx xxx xxxx` | Phone input |
+| `formatIranianMobile(p)` | `"09121234567"` → `"۰۹۱۲ ۱۲۳ ۴۵۶۷"` | Display |
+| `validateBankCard(c)` | Luhn algorithm on 16-digit card | Payment forms |
+| `formatBankCard(c)` | `"6037xxxx..."` → `"۶۰۳۷ xxxx xxxx xxxx"` | Display |
+
+Import:
+```tsx
+import { formatPersianNumber, formatPersianDate, toPersianDigits } from "@/lib/persian"
+```
+
+## Zod Validation Schemas (`lib/validations/`)
+
+Pre-built schemas with Persian error messages:
+
+| Schema | Use for |
+|--------|---------|
+| `persianMobileSchema` | Phone input (validates Iranian mobile) |
+| `bankCardSchema` | Bank card input (Luhn + 16 digits) |
+| `emailSchema` | Email field |
+| `nameSchema` | Name field (2-50 chars) |
+| `passwordSchema` | Password field (8-100 chars) |
+| `loginSchema` | Login form (phone) |
+| `signupSchema` | Signup form (name + phone) |
+| `contactSchema` | Contact form (name + email + subject + message) |
+
+Usage with React Hook Form:
+```tsx
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { contactSchema, type ContactFormData } from "@/lib/validations"
+
+const form = useForm<ContactFormData>({
+  resolver: zodResolver(contactSchema),
+})
+```
 
 ## Database (Drizzle + libSQL)
 
