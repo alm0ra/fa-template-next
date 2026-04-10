@@ -303,6 +303,47 @@ export async function GET() {
 - No shop, blog, payment, auth, or CMS baked in.
 - Agent builds project-specific features from this shell.
 - Design quality comes from the utility classes, not from pre-built sections.
-- Route handlers must stay compatible with v2 shared runtime.
+- Route handlers must stay compatible with Deno isolation runtime.
+
+## API Route Handler Rules (CRITICAL)
+
+API routes run inside isolated Deno subprocesses. Follow these rules strictly:
+
+### DO:
+- Use `Response.json()` for JSON responses (Web Standard API)
+- Use `@/lib/db` for database access (Drizzle + libSQL via HTTP)
+- Use `fetch()` for external API calls (payment gateways, webhooks, etc.)
+- Use `crypto.randomUUID()` for IDs (Web Standard)
+- Use `zod` for validation (pure JS)
+- Use `@/lib/platform` for platform context
+- Return `Response` objects from handlers
+
+### DON'T:
+- Never use `NextResponse` or import from `next/server` — use `Response.json()` instead
+- Never use `sharp` or any native C++ npm modules
+- Never use `fs`, `child_process`, or `net` directly
+- Never use `bcrypt` — use `bcryptjs` (pure JS) instead
+- Never use `better-sqlite3` — use `@libsql/client` (HTTP mode)
+- Never rely on `global` state between requests (each request may run in a fresh isolate)
+- Never use `process.exit()` or modify `process.env` directly
+
+### Handler Signature:
+```ts
+// Correct ✅
+export async function GET(request: Request) {
+  return Response.json({ ok: true });
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  return Response.json({ created: true }, { status: 201 });
+}
+
+// Wrong ❌
+import { NextResponse } from "next/server";
+export async function GET() {
+  return NextResponse.json({ ok: true });
+}
+```
 - Do not reintroduce Supabase-specific code.
 - Keep dependencies justified — every package earns its place.

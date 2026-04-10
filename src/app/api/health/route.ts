@@ -1,16 +1,15 @@
-import { NextResponse } from "next/server";
 import { getPlatformContext } from "@/lib/platform";
 
-export async function GET() {
-  const context = getPlatformContext();
+export async function GET(_request: Request, context?: { env?: Record<string, string> }) {
+  const platform = getPlatformContext(context?.env);
 
-  return NextResponse.json({
+  return Response.json({
     ok: true,
     service: "fa-template-next",
-    version: context.version,
-    runtimeLane: context.runtimeLane,
-    projectId: context.projectId,
-    databasePath: context.databasePath,
+    version: platform.version,
+    runtimeLane: platform.runtimeLane,
+    projectId: platform.projectId,
+    databasePath: platform.databasePath,
     timestamp: new Date().toISOString(),
   });
 }

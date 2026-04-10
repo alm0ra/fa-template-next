@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getPlatformContext } from "@/lib/platform";
 
@@ -25,22 +24,22 @@ const demoCards = [
   },
 ];
 
-export async function GET() {
-  const context = getPlatformContext();
+export async function GET(_request: Request, context?: { env?: Record<string, string> }) {
+  const platform = getPlatformContext(context?.env);
 
-  return NextResponse.json({
+  return Response.json({
     ok: true,
-    context,
+    context: platform,
     cards: demoCards,
   });
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request, context?: { env?: Record<string, string> }) {
   const body = await request.json();
   const parsed = demoInputSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json(
+    return Response.json(
       {
         ok: false,
         error: "invalid_payload",
@@ -50,13 +49,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const context = getPlatformContext();
+  const platform = getPlatformContext(context?.env);
 
-  return NextResponse.json(
+  return Response.json(
     {
       ok: true,
       message: "payload_received",
-      context,
+      context: platform,
       draft: {
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),

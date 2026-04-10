@@ -6,12 +6,13 @@ export type PlatformContext = {
   databasePath: string;
 };
 
-export function getPlatformContext(): PlatformContext {
+export function getPlatformContext(env?: Record<string, string>): PlatformContext {
+  const e = env || process.env;
   return {
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:8080",
-    projectId: process.env.PROJECT_ID || "project-demo",
-    version: process.env.VERSION || "2",
-    runtimeLane: process.env.RUNTIME_LANE || "shared",
-    databasePath: process.env.DATABASE_PATH || "/data/db/project-demo/app.db",
+    siteUrl: e.NEXT_PUBLIC_SITE_URL || "http://localhost:8080",
+    projectId: e.PROJECT_ID || "project-demo",
+    version: e.VERSION || "2",
+    runtimeLane: e.RUNTIME_LANE || "shared",
+    databasePath: e.DATABASE_PATH || "/data/db/project-demo/app.db",
   };
 }

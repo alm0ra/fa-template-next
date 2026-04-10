@@ -15,6 +15,11 @@
  *   import { users } from "@/db/schema";
  *
  *   const all = await db.select().from(users);
+ *
+ * Or with explicit env (Deno isolation):
+ *
+ *   import { createDb } from "@/lib/db";
+ *   const db = createDb(context.env);
  */
 
 import { createClient, type Client } from "@libsql/client";
@@ -29,10 +34,11 @@ const globalForDb = globalThis as unknown as {
   __noqteDbDrizzle?: LibSQLDatabase<Schema>;
 };
 
-function getClient(): Client {
-  if (globalForDb.__noqteDbClient) return globalForDb.__noqteDbClient;
+function getClient(env?: Record<string, string>): Client {
+  if (!env && globalForDb.__noqteDbClient) return globalForDb.__noqteDbClient;
 
-  const url = process.env.DATABASE_URL;
+  const e = env || process.env;
+  const url = e.DATABASE_URL;
   if (!url) {
     throw new Error(
       "DATABASE_URL is not set. The platform should inject this at runtime; " +
@@ -42,18 +48,25 @@ function getClient(): Client {
 
   const client = createClient({
     url,
-    authToken: process.env.DATABASE_AUTH_TOKEN,
+    authToken: e.DATABASE_AUTH_TOKEN,
   });
 
-  globalForDb.__noqteDbClient = client;
+  if (!env) globalForDb.__noqteDbClient = client;
   return client;
 }
 
-function getDb(): LibSQLDatabase<Schema> {
-  if (globalForDb.__noqteDbDrizzle) return globalForDb.__noqteDbDrizzle;
-  const instance = drizzle(getClient(), { schema });
-  globalForDb.__noqteDbDrizzle = instance;
+function getDb(env?: Record<string, string>): LibSQLDatabase<Schema> {
+  if (!env && globalForDb.__noqteDbDrizzle) return globalForDb.__noqteDbDrizzle;
+  const instance = drizzle(getClient(env), { schema });
+  if (!env) globalForDb.__noqteDbDrizzle = instance;
   return instance;
+}
+
+/**
+ * Create a DB instance with explicit env (for Deno isolated handlers).
+ */
+export function createDb(env: Record<string, string>): LibSQLDatabase<Schema> {
+  return getDb(env);
 }
 
 /**
