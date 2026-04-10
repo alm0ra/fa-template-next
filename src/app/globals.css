@@ -33,6 +33,11 @@
     --ring: 20 68% 37%;
 
     --radius: 0.75rem;
+
+    /* Extended palette — agent can change these per project */
+    --gradient-from: 20 68% 37%;
+    --gradient-to: 28 80% 52%;
+    --surface-glass: 37 50% 98%;
   }
 
   .dark {
@@ -63,6 +68,10 @@
     --border: 28 15% 22%;
     --input: 28 15% 22%;
     --ring: 20 68% 50%;
+
+    --gradient-from: 20 68% 50%;
+    --gradient-to: 28 80% 62%;
+    --surface-glass: 28 25% 12%;
   }
 }
 
@@ -72,5 +81,149 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DESIGN UTILITIES — agent uses these for visual richness.
+   Change --gradient-from / --gradient-to / --primary per project
+   to get a completely different look while keeping the quality.
+   ═══════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* ── Gradient backgrounds ──────────────────────────────── */
+  .gradient-primary {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-from)) 0%,
+      hsl(var(--gradient-to)) 100%
+    );
+  }
+  .gradient-primary-soft {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-from) / 0.08) 0%,
+      hsl(var(--gradient-to) / 0.04) 100%
+    );
+  }
+  .gradient-hero {
+    background: linear-gradient(
+      160deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--gradient-from) / 0.06) 40%,
+      hsl(var(--gradient-to) / 0.1) 100%
+    );
+  }
+  .gradient-radial {
+    background: radial-gradient(
+      ellipse at top right,
+      hsl(var(--gradient-from) / 0.12) 0%,
+      transparent 60%
+    );
+  }
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-from)),
+      hsl(var(--gradient-to))
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Glass / frosted surface ───────────────────────────── */
+  .glass {
+    background: hsl(var(--surface-glass) / 0.7);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  .glass-strong {
+    background: hsl(var(--surface-glass) / 0.85);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1px solid hsl(var(--border) / 0.6);
+  }
+
+  /* ── Card hover lift effect ────────────────────────────── */
+  .hover-lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 8px 24px hsl(var(--foreground) / 0.08),
+      0 0 0 1px hsl(var(--border) / 0.5);
+  }
+
+  /* ── Stagger animation delays for lists ────────────────── */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+  .stagger-6 { animation-delay: 0.6s; }
+
+  /* ── Decorative blobs / blurs ──────────────────────────── */
+  .blob-primary {
+    position: absolute;
+    border-radius: 50%;
+    background: hsl(var(--gradient-from) / 0.15);
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  .blob-secondary {
+    position: absolute;
+    border-radius: 50%;
+    background: hsl(var(--gradient-to) / 0.12);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  /* ── Shimmer / skeleton loading ────────────────────────── */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--muted) / 0.5) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 8s ease-in-out infinite;
+  }
+
+  /* ── Divider with gradient fade ────────────────────────── */
+  .divider-gradient {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      hsl(var(--border)),
+      transparent
+    );
+  }
+
+  /* ── Icon container (replaces plain colored div) ───────── */
+  .icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background: hsl(var(--gradient-from) / 0.1);
+    border: 1px solid hsl(var(--gradient-from) / 0.15);
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .icon-box:hover {
+    background: hsl(var(--gradient-from) / 0.18);
+    border-color: hsl(var(--gradient-from) / 0.3);
+  }
+
+  /* ── Section spacing rhythm ────────────────────────────── */
+  .section-spacing {
+    @apply py-20 sm:py-28;
+  }
+  .section-spacing-sm {
+    @apply py-12 sm:py-16;
   }
 }
