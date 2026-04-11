@@ -320,6 +320,7 @@ API routes run inside isolated Deno subprocesses. Follow these rules strictly:
 
 ### DON'T:
 - Never use `NextResponse` or import from `next/server` — use `Response.json()` instead
+- Never use `cookies()` or `headers()` from `next/headers` — read cookies via `request.headers.get("cookie")` instead
 - Never use `sharp` or any native C++ npm modules
 - Never use `fs`, `child_process`, or `net` directly
 - Never use `bcrypt` — use `bcryptjs` (pure JS) instead
@@ -336,13 +337,17 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const body = await request.json();
+  // Read cookies from request (NOT next/headers):
+  const cookie = request.headers.get("cookie") || "";
   return Response.json({ created: true }, { status: 201 });
 }
 
 // Wrong ❌
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";    // ← NEVER
 export async function GET() {
-  return NextResponse.json({ ok: true });
+  const c = await cookies();                // ← NEVER
+  return NextResponse.json({ ok: true });   // ← NEVER
 }
 ```
 - Do not reintroduce Supabase-specific code.
