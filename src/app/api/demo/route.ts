@@ -24,8 +24,8 @@ const demoCards = [
   },
 ];
 
-export async function GET(_request: Request, context?: { env?: Record<string, string> }) {
-  const platform = getPlatformContext(context?.env);
+export async function GET() {
+  const platform = getPlatformContext();
 
   return Response.json({
     ok: true,
@@ -34,7 +34,7 @@ export async function GET(_request: Request, context?: { env?: Record<string, st
   });
 }
 
-export async function POST(request: Request, context?: { env?: Record<string, string> }) {
+export async function POST(request: Request) {
   const body = await request.json();
   const parsed = demoInputSchema.safeParse(body);
 
@@ -49,7 +49,7 @@ export async function POST(request: Request, context?: { env?: Record<string, st
     );
   }
 
-  const platform = getPlatformContext(context?.env);
+  const platform = getPlatformContext();
 
   return Response.json(
     {

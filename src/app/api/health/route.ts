@@ -1,7 +1,7 @@
 import { getPlatformContext } from "@/lib/platform";
 
-export async function GET(_request: Request, context?: { env?: Record<string, string> }) {
-  const platform = getPlatformContext(context?.env);
+export async function GET() {
+  const platform = getPlatformContext();
 
   return Response.json({
     ok: true,
