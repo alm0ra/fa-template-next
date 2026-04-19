@@ -1,7 +1,7 @@
 # fa-template-next
 
 ## Stack
-- Next.js 15 (App Router, standalone output)
+- Next.js 15 (App Router, static export)
 - React 19 + TypeScript
 - Tailwind CSS 3.4 + shadcn/ui (20+ components)
 - Radix UI primitives (via shadcn)
