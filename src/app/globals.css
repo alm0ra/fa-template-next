@@ -133,17 +133,23 @@
   }
 
   /* ── Glass / frosted surface ───────────────────────────── */
+  /* backdrop-filter re-samples + re-blurs whatever is behind it; isolating the
+     element on its own GPU layer (translateZ) keeps that work stable instead of
+     re-running it as part of a larger repaint (a known backdrop-filter flicker
+     source in Chromium). Visual output unchanged. */
   .glass {
     background: hsl(var(--surface-glass) / 0.7);
     backdrop-filter: blur(12px) saturate(1.4);
     -webkit-backdrop-filter: blur(12px) saturate(1.4);
     border: 1px solid hsl(var(--border) / 0.5);
+    transform: translateZ(0);
   }
   .glass-strong {
     background: hsl(var(--surface-glass) / 0.85);
     backdrop-filter: blur(20px) saturate(1.6);
     -webkit-backdrop-filter: blur(20px) saturate(1.6);
     border: 1px solid hsl(var(--border) / 0.6);
+    transform: translateZ(0);
   }
 
   /* ── Card hover lift effect ────────────────────────────── */
@@ -166,12 +172,20 @@
   .stagger-6 { animation-delay: 0.6s; }
 
   /* ── Decorative blobs / blurs ──────────────────────────── */
+  /* NOTE: blobs use a large filter: blur(); without an isolated GPU layer the
+     browser re-rasterizes that expensive blur whenever a sibling/backdrop
+     repaints (e.g. in the live dev-preview, on every frame / mouse-move) →
+     visible jank/flicker. translateZ(0) promotes each blob to its own
+     composited layer so the blur is rasterized ONCE and only cheaply
+     composited afterwards. Purely a perf hint — visual output is identical. */
   .blob-primary {
     position: absolute;
     border-radius: 50%;
     background: hsl(var(--gradient-from) / 0.15);
     filter: blur(60px);
     pointer-events: none;
+    transform: translateZ(0);
+    will-change: transform;
   }
   .blob-secondary {
     position: absolute;
@@ -179,6 +193,8 @@
     background: hsl(var(--gradient-to) / 0.12);
     filter: blur(80px);
     pointer-events: none;
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   /* ── Shimmer / skeleton loading ────────────────────────── */
