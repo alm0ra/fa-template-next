@@ -27,7 +27,7 @@ const features = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-platform-starter="true">
       <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-6">
 
         {/* Header */}
