@@ -1,5 +1,7 @@
 import { getPlatformContext } from "@/lib/platform";
 
+export const dynamic = "force-static";
+
 export async function GET() {
   const platform = getPlatformContext();
 

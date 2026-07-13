@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { getPlatformContext } from "@/lib/platform";
 
+export const dynamic = "force-static";
+
 const demoInputSchema = z.object({
   title: z.string().min(2).max(120),
   intent: z.string().min(2).max(240),
